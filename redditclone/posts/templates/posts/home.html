@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vaheed</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <style>
+        .navbar{
+         background-color:darkcyan;
+         color:white;
+        }
+        .header{
+         display:flex;
+        }
+        .head2{
+        padding:10px;
+        margin-left:40px;
+        }
+        .header a{
+        padding:10px;
+        margin-left:20px;
+        color:white;
+        background-color:grey;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="header">
+    <a href="{% url 'home' %}"><div>Blog's</div></a>
+    <div class="head2">About</div>
+    <div class="head2">Twitter</div>
+    <div style="right:0; position:absolute;padding:10px;">
+      {% if user.is_authenticated %}
+      <a href="#" onclick="document.getElementById('logout').submit()">Log out</a>
+      <form  id="logout" method="POST" action="{% url 'accounts:logout' %}">
+          {% csrf_token %}
+          <input type="hidden"/>
+      </form>
+
+      {% else %}
+      <a href="{% url 'accounts:signup' %}">Signup</a>
+      <a href="{% url 'accounts:login' %}">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+
+
+<div class="container">
+
+<h1>The homepage of now here</h1>
+<h4><a class="btn btn-primary" href="{% url 'posts:create' %}">New Post</a></h4>
+<hr>
+
+
+<div class="container">
+<table class="table table-danger">
+  <thead>
+    <tr>
+      <th scope="col">Votes</th>
+      <th scope="col">Title</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+{% for post in posts.all %}
+  <tbody>
+    <tr>
+      <td>
+      <form method="POST" action="{% url 'posts:upvote' post.id %}">
+        {% csrf_token %}
+         <input type="submit" value="UP"/>
+      </form>{{ post.votes_total }}
+      <form method="POST" action="{% url 'posts:downvote' post.id %}">
+        {% csrf_token %}
+        <input type="submit" value="DOWN"/>
+      </form>
+      </td>
+      <td><a href="{{ post.url }}">{{ post.title }}</a></td>
+      <td>{{ post.pub_date_pretty }} by {{ post.author.username }}</td>
+
+    </tr>
+  </tbody>
+{% endfor %}
+</table>
+</div>
+</div>
+
+
+</body>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+</html>
